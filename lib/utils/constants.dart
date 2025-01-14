@@ -1,0 +1,1 @@
+// Konstanta aplikasi
