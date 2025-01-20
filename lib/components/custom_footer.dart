@@ -30,7 +30,7 @@ class CustomFooter extends StatelessWidget {
             icon: Icons.sms,
             onTap: () async {
               // Membuka aplikasi SMS
-              final Uri smsUri = Uri(scheme: 'sms', path: '1234567890'); // Ganti dengan nomor telepon yang sesuai
+              final Uri smsUri = Uri(scheme: 'sms', path: '081234567899'); // Ganti dengan nomor telepon yang sesuai
               if (await canLaunch(smsUri.toString())) {
                 await launch(smsUri.toString());
               } else {
@@ -54,9 +54,15 @@ class CustomFooter extends StatelessWidget {
           FooterButton(
             label: 'Pay',
             icon: Icons.payment,
-            onTap: () {
-              print('Pembayaran');
-            },
+            onTap: ()async {
+              // Membuka aplikasi Maps
+              final Uri mapsUri = Uri(scheme: 'sms', path:'checkout_screen.dart' ); 
+              if (await canLaunch(mapsUri.toString())) {
+                await launch(mapsUri.toString());
+              } else {
+                print('Tidak dapat membuka Maps');
+              }
+            }
           ),
         ],
       ),

@@ -4,6 +4,10 @@ import 'package:uas_flutter_a11_2021_13554/components/global_template.dart';
 import 'package:uas_flutter_a11_2021_13554/models/product_model.dart';
 
 class ProductDetailScreen extends StatelessWidget {
+
+  final Product product;
+
+  const ProductDetailScreen({Key? key, required this.product}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final Product product = ModalRoute.of(context)!.settings.arguments as Product;

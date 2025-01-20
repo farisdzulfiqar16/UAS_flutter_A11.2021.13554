@@ -1,227 +1,139 @@
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:uas_flutter_a11_2021_13554/components/global_template.dart'; // Import GlobalTemplate
+import 'package:uas_flutter_a11_2021_13554/components/global_template.dart';
 
 class MainDashboardScreen extends StatefulWidget {
-  const MainDashboardScreen({Key? key}) : super(key: key);
-
   @override
   _MainDashboardScreenState createState() => _MainDashboardScreenState();
 }
 
 class _MainDashboardScreenState extends State<MainDashboardScreen> {
-  final List<Map<String, dynamic>> products = [];
-  final ImagePicker _picker = ImagePicker();
-  File? _imageFile;
+  // final List<Product> products = [];
+  // final List<Product> cart = [];
+  // final ImagePicker _picker = ImagePicker();
+  // bool _isExpanded = false;
 
-  // Method untuk menambahkan produk baru
-  void _addProduct(String name, String description, double price, File? image) {
-    setState(() {
-      products.add({
-        'name': name,
-        'description': description,
-        'price': price,
-        'image': image,
-      });
-    });
-    Navigator.pop(context); // Close modal setelah produk ditambahkan
-  }
+  // File? _imageFile;
+  // final TextEditingController _nameController = TextEditingController();
+  // final TextEditingController _descriptionController = TextEditingController();
+  // final TextEditingController _priceController = TextEditingController();
 
-  // Method untuk memilih gambar dari galeri
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
-    }
-  }
+  @override
+  
 
+  // ========================================================
+  // core halaman
   @override
   Widget build(BuildContext context) {
     return GlobalTemplate(
-      pageTitle: 'Dashboard', // Kirimkan pageTitle
-      bodyContent: Column(
-        // Kirimkan bodyContent
-        children: [
-          Expanded(
-            flex: 2,
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text(
-                    "Welcome, Admin!",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 5,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8.0,
-                  mainAxisSpacing: 8.0,
-                  childAspectRatio: 3 / 4,
+      pageTitle: "Dashboard",
+      profileImagePath: "https://via.placeholder.com/150", // Path foto profil
+      bodyContent: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Statistik
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildDashboardCard(
+                  title: "Orders",
+                  value: "120",
+                  color: Colors.green,
                 ),
-                itemCount: products.length, // Update dengan jumlah produk
-                itemBuilder: (context, index) {
-                  final product = products[index];
-                  return Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(8),
-                                topRight: Radius.circular(8),
-                              ),
-                              image: DecorationImage(
-                                image: product['image'] != null
-                                    ? FileImage(product['image'])
-                                    : const AssetImage(
-                                            'assets/images/placeholder.png')
-                                        as ImageProvider,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            product['name'],
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            'Rp ${product['price']}',
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.green),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                _buildDashboardCard(
+                  title: "Products",
+                  value: "50",
+                  color: Colors.blue,
+                ),
+              ],
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            // Navigasi cepat
+            const Text(
+              "Quick Actions",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildQuickAction(
+                  label: "Add Product",
+                  icon: Icons.add,
+                  onTap: () {
+                    Navigator.pushNamed(context, "/add_product");
+                  },
+                ),
+                _buildQuickAction(
+                  label: "View Sales",
+                  icon: Icons.bar_chart,
+                  onTap: () {
+                    Navigator.pushNamed(context, "/sales_report");
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Action for FAB
-          _showAddProductDialog();
-        },
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
-  // Method untuk menampilkan dialog untuk menambah produk
-  String productName = '';
-  String productDescription = '';
-  double productPrice = 0.0;
+  Widget _buildDashboardCard({
+    required String title,
+    required String value,
+    required Color color,
+  }) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Container(
+        width: 150,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: color.withOpacity(0.1),
+        ),
+        child: Column(
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-  // void _addProduct(String name, String description, double price, File? image) {
-  //   setState(() {
-  //     products.add({
-  //       'name': name,
-  //       'description': description,
-  //       'price': price,
-  //       'image': image,
-  //     });
-  //   });
-  // }
-
-  void _showAddProductDialog() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(16),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const Text(
-                  'Add New Product',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Product Name'),
-                  onChanged: (value) {
-                    productName = value; // Menyimpan nama produk
-                  },
-                ),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Description'),
-                  onChanged: (value) {
-                    productDescription = value; // Menyimpan deskripsi produk
-                  },
-                ),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Price'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    productPrice =
-                        double.tryParse(value) ?? 0.0; // Menyimpan harga produk
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.image),
-                  onPressed: _pickImage,
-                ),
-                _imageFile != null
-                    ? Image.file(_imageFile!, height: 100, width: 100)
-                    : const Text('No image selected'),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (productName.isNotEmpty &&
-                          productDescription.isNotEmpty &&
-                          productPrice > 0) {
-                        _addProduct(
-                          productName,
-                          productDescription,
-                          productPrice,
-                          _imageFile,
-                        );
-                        Navigator.pop(context); // Close the modal
-                      }
-                    },
-                    child: const Text('Add Product'),
-                  ), //
-                ), //
-              ],
-            ), //
-          ), //
-        ); //
-      },
+  Widget _buildQuickAction({
+    required String label,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.blue[100],
+            child: Icon(icon, color: Colors.blue[800], size: 28),
+          ),
+          const SizedBox(height: 8),
+          Text(label, style: const TextStyle(fontSize: 14)),
+        ],
+      ),
     );
   }
 }

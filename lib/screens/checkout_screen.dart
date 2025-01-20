@@ -1,22 +1,21 @@
 // Halaman checkout
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:uas_flutter_a11_2021_13554/models/product_model.dart';
 import 'package:uas_flutter_a11_2021_13554/components/global_template.dart';
+import 'package:uas_flutter_a11_2021_13554/providers/cart_provider.dart';
 
 class CheckoutScreen extends StatelessWidget {
-  final List<Product> checkoutItems;
+  final List<Product> checkoutItems; // Menambahkan parameter checkoutItems
 
-  CheckoutScreen({Key? key, required this.checkoutItems}) : super(key: key);
+  // Konstruktor
+  CheckoutScreen({required this.checkoutItems});
 
   @override
   Widget build(BuildContext context) {
-    final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
-    
-    final total = checkoutItems.fold<double>(
-      0,
-      (sum, item) => sum + item.price,
-    );
+    final NumberFormat currencyFormat =
+        NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
 
     return GlobalTemplate(
       pageTitle: "Checkout",
@@ -31,16 +30,19 @@ class CheckoutScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final item = checkoutItems[index];
                   return ListTile(
-                    leading: Image.asset('images/${item.imageUrl}', width: 50),
+                    leading: Image.asset('assets/images/${item.imageUrl}',
+                        width: 50),
                     title: Text(item.name),
-                    subtitle: Text(currencyFormat.format(item.price)), // Format harga menjadi Rupiah
+                    subtitle: Text(currencyFormat.format(item.price)),
+                    trailing: Text(
+                        'x1'), // Sesuaikan jumlah item sesuai logika aplikasi Anda
                   );
                 },
               ),
             ),
             const SizedBox(height: 20),
             Text(
-              'Total: ${currencyFormat.format(total)}', // Total harga dalam Rupiah
+              'Total: ${currencyFormat.format(checkoutItems.fold(0, (sum, item) => sum + item.price.toInt()))}', // Total harga
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
@@ -56,7 +58,8 @@ class CheckoutScreen extends StatelessWidget {
           ],
         ),
       ),
-      profileImagePath: "https://example.com/your_profile_image.jpg",
+      profileImagePath:
+          "https://example.com/your_profile_image.jpg", // Ganti dengan URL gambar profil
     );
   }
 }

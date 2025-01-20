@@ -31,6 +31,11 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+        <!-- <intent>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:schemas="https" />
+        </Intent> -->
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
          https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
